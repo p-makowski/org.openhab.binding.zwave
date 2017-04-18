@@ -14,8 +14,8 @@ import java.util.Arrays;
 
 import org.junit.Test;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage;
+import org.openhab.binding.zwave.internal.protocol.SucType;
 import org.openhab.binding.zwave.internal.protocol.serialmessage.EnableSucMessageClass;
-import org.openhab.binding.zwave.internal.protocol.serialmessage.EnableSucMessageClass.SUCType;
 
 /**
  * Test cases for EnableSUCMessageClass message.
@@ -34,15 +34,15 @@ public class EnableSUCMessageClassTest {
         SerialMessage msg;
         EnableSucMessageClass handler = new EnableSucMessageClass();
 
-        msg = handler.doRequest(SUCType.NONE).getSerialMessage();
+        msg = handler.doRequest(SucType.SUC_NONE).getSerialMessage();
         msg.setCallbackId(1);
         assertTrue(Arrays.equals(msg.getMessageBuffer(), expectedResponseNone));
 
-        msg = handler.doRequest(SUCType.BASIC).getSerialMessage();
+        msg = handler.doRequest(SucType.SUC_BASIC).getSerialMessage();
         msg.setCallbackId(1);
         assertTrue(Arrays.equals(msg.getMessageBuffer(), expectedResponseBasic));
 
-        msg = handler.doRequest(SUCType.SERVER).getSerialMessage();
+        msg = handler.doRequest(SucType.SUC_SERVER).getSerialMessage();
         msg.setCallbackId(1);
         assertTrue(Arrays.equals(msg.getMessageBuffer(), expectedResponseServer));
     }

@@ -99,7 +99,7 @@ public class ZWaveController {
     private int deviceId = 0;
     private int zwaveLibraryType = 0;
     private int sentDataPointer = 1;
-    private boolean setSUC = false;
+    private SucType sucType = SucType.SUC_NONE;
     private ZWaveDeviceType controllerType = ZWaveDeviceType.UNKNOWN;
     private int sucID = 0;
     private boolean softReset = false;
@@ -131,7 +131,7 @@ public class ZWaveController {
      */
     public ZWaveController(ZWaveIoHandler handler, Map<String, String> config) {
         masterController = "true".equals(config.get("masterController"));
-        setSUC = "true".equals(config.get("isSUC"));
+        sucType = SucType.valueOf(config.get("sucType"));
         softReset = "true".equals(config.get("softReset"));
         secureInclusionMode = config.containsKey("secureInclusion") ? Integer.parseInt(config.get("secureInclusion"))
                 : 0;
@@ -269,15 +269,15 @@ public class ZWaveController {
                 sucID = ((GetSucNodeIdMessageClass) processor).getSucNodeId();
 
                 // If we want to be the SUC, enable it here
-                if (setSUC == true && sucID == 0) {
+                if (sucType != SucType.SUC_NONE && sucID == 0) {
                     // We want to be SUC
-                    enqueue(new EnableSucMessageClass().doRequest(EnableSucMessageClass.SUCType.SERVER));
-                    enqueue(new SetSucNodeMessageClass().doRequest(ownNodeId, SetSucNodeMessageClass.SUCType.SERVER));
-                } else if (setSUC == false && sucID == ownNodeId) {
+                    enqueue(new EnableSucMessageClass().doRequest(sucType));
+                    enqueue(new SetSucNodeMessageClass().doRequest(ownNodeId, sucType));
+                } else if (sucType == SucType.SUC_NONE && sucID == ownNodeId) {
                     // We don't want to be SUC, but we currently are!
                     // Disable SERVER functionality, and set the node to 0
-                    enqueue(new EnableSucMessageClass().doRequest(EnableSucMessageClass.SUCType.NONE));
-                    enqueue(new SetSucNodeMessageClass().doRequest(ownNodeId, SetSucNodeMessageClass.SUCType.NONE));
+                    enqueue(new EnableSucMessageClass().doRequest(sucType));
+                    enqueue(new SetSucNodeMessageClass().doRequest(ownNodeId, sucType));
                 }
                 enqueue(new GetControllerCapabilitiesMessageClass().doRequest());
                 break;

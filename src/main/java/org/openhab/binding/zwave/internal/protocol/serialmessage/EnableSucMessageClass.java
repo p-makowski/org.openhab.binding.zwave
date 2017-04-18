@@ -10,6 +10,7 @@ package org.openhab.binding.zwave.internal.protocol.serialmessage;
 
 import org.openhab.binding.zwave.internal.protocol.SerialMessage;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessageClass;
+import org.openhab.binding.zwave.internal.protocol.SucType;
 import org.openhab.binding.zwave.internal.protocol.ZWaveController;
 import org.openhab.binding.zwave.internal.protocol.ZWaveSerialMessageException;
 import org.openhab.binding.zwave.internal.protocol.ZWaveSerialPayload;
@@ -26,20 +27,20 @@ import org.slf4j.LoggerFactory;
 public class EnableSucMessageClass extends ZWaveCommandProcessor {
     private final Logger logger = LoggerFactory.getLogger(EnableSucMessageClass.class);
 
-    public ZWaveSerialPayload doRequest(SUCType type) {
+    public ZWaveSerialPayload doRequest(SucType type) {
         logger.debug("Assigning Controller SUC functionality to {}", type.toString());
 
         byte[] payload = new byte[2];
         switch (type) {
-            case NONE:
+            case SUC_NONE:
                 payload[0] = 0;
                 payload[1] = 0;
                 break;
-            case BASIC:
+            case SUC_BASIC:
                 payload[0] = 1;
                 payload[1] = 0;
                 break;
-            case SERVER:
+            case SUC_SERVER:
                 payload[0] = 1;
                 payload[1] = 1;
                 break;
@@ -62,11 +63,5 @@ public class EnableSucMessageClass extends ZWaveCommandProcessor {
 
         transaction.setTransactionComplete();
         return true;
-    }
-
-    public enum SUCType {
-        NONE,
-        BASIC,
-        SERVER
     }
 }

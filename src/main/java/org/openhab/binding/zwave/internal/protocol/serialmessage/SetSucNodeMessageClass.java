@@ -10,6 +10,7 @@ package org.openhab.binding.zwave.internal.protocol.serialmessage;
 
 import org.openhab.binding.zwave.internal.protocol.SerialMessage;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage.SerialMessageClass;
+import org.openhab.binding.zwave.internal.protocol.SucType;
 import org.openhab.binding.zwave.internal.protocol.ZWaveController;
 import org.openhab.binding.zwave.internal.protocol.ZWaveSerialMessageException;
 import org.openhab.binding.zwave.internal.protocol.ZWaveSerialPayload;
@@ -26,21 +27,21 @@ import org.slf4j.LoggerFactory;
 public class SetSucNodeMessageClass extends ZWaveCommandProcessor {
     private final Logger logger = LoggerFactory.getLogger(SetSucNodeMessageClass.class);
 
-    public ZWaveSerialPayload doRequest(int nodeId, SUCType type) {
+    public ZWaveSerialPayload doRequest(int nodeId, SucType type) {
         logger.debug("NODE {}: SetSucNodeID node as {}", nodeId, type.toString());
 
         byte[] payload = new byte[4];
         payload[0] = (byte) nodeId;
         switch (type) {
-            case NONE:
+            case SUC_NONE:
                 payload[1] = 0;
                 payload[3] = 0;
                 break;
-            case BASIC:
+            case SUC_BASIC:
                 payload[1] = 1;
                 payload[3] = 0;
                 break;
-            case SERVER:
+            case SUC_SERVER:
                 payload[1] = 1;
                 payload[3] = 1;
                 break;
@@ -81,11 +82,4 @@ public class SetSucNodeMessageClass extends ZWaveCommandProcessor {
             return true;
         }
     }
-
-    public enum SUCType {
-        NONE,
-        BASIC,
-        SERVER
-    }
-
 }

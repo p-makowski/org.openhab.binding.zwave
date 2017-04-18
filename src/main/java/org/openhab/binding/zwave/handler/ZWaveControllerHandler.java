@@ -40,6 +40,7 @@ import org.openhab.binding.zwave.event.BindingEventFactory;
 import org.openhab.binding.zwave.event.BindingEventType;
 import org.openhab.binding.zwave.internal.ZWaveEventPublisher;
 import org.openhab.binding.zwave.internal.protocol.SerialMessage;
+import org.openhab.binding.zwave.internal.protocol.SucType;
 import org.openhab.binding.zwave.internal.protocol.ZWaveController;
 import org.openhab.binding.zwave.internal.protocol.ZWaveEventListener;
 import org.openhab.binding.zwave.internal.protocol.ZWaveIoHandler;
@@ -71,7 +72,7 @@ public abstract class ZWaveControllerHandler extends BaseBridgeHandler implement
     private volatile ZWaveController controller;
 
     private Boolean isMaster;
-    private Boolean isSUC;
+    private SucType sucType;
     private String networkKey;
     private Integer secureInclusionMode;
     private Integer healTime;
@@ -119,11 +120,11 @@ public abstract class ZWaveControllerHandler extends BaseBridgeHandler implement
             wakeupDefaultPeriod = 0;
         }
 
-        param = getConfig().get(CONFIGURATION_SUC);
-        if (param instanceof Boolean && param != null) {
-            isSUC = (Boolean) param;
+        param = getConfig().get(CONFIGURATION_SUCTYPE);
+        if (param instanceof String && param != null) {
+            sucType = SucType.valueOf((String) param);
         } else {
-            isSUC = false;
+            sucType = SucType.SUC_NONE;
         }
 
         param = getConfig().get(CONFIGURATION_NETWORKKEY);
@@ -175,7 +176,7 @@ public abstract class ZWaveControllerHandler extends BaseBridgeHandler implement
         // Create config parameters
         Map<String, String> config = new HashMap<String, String>();
         config.put("masterController", isMaster.toString());
-        config.put("isSUC", isSUC ? "true" : "false");
+        config.put("sucType", sucType.toString());
         config.put("secureInclusion", secureInclusionMode.toString());
         config.put("networkKey", networkKey);
         config.put("wakeupDefaultPeriod", wakeupDefaultPeriod.toString());
